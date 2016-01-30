@@ -1,0 +1,35 @@
+'use strict';
+
+var ipc = require('../../../node-ipc');
+
+/***************************************\
+ *
+ * You should start both hello and world
+ * then you will see them communicating.
+ *
+ * *************************************/
+
+ipc.config.id = 'hello';
+ipc.config.retry = 1500;
+ipc.config.maxRetries = 10;
+
+ipc.connectToNet('world', function () {
+    ipc.of.world.on('connect', function () {
+        ipc.log('## connected to world ##'.rainbow, ipc.config.delay);
+        ipc.of.world.emit('app.message', {
+            id: ipc.config.id,
+            message: 'hello'
+        });
+    });
+    ipc.of.world.on('disconnect', function () {
+        ipc.log('disconnected from world'.notice);
+    });
+    ipc.of.world.on('app.message', function (data) {
+        ipc.log('got a message from world : '.debug, data.message);
+    });
+    ipc.of.world.on('kill.connection', function (data) {
+        ipc.log('world requested kill.connection'.notice);
+        ipc.disconnect('world');
+    });
+});
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uL25vZGUtaXBjL2V4YW1wbGUvVENQU29ja2V0L011bHRpLUNsaWVudC1Ccm9hZGNhc3QvaGVsbG8tY2xpZW50LmpzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEsSUFBSSxNQUFJLFFBQVEsbUJBQVIsQ0FBSjs7Ozs7Ozs7O0FBU0osSUFBSSxNQUFKLENBQVcsRUFBWCxHQUFnQixPQUFoQjtBQUNBLElBQUksTUFBSixDQUFXLEtBQVgsR0FBa0IsSUFBbEI7QUFDQSxJQUFJLE1BQUosQ0FBVyxVQUFYLEdBQXNCLEVBQXRCOztBQUVBLElBQUksWUFBSixDQUNJLE9BREosRUFFSSxZQUFVO0FBQ04sUUFBSSxFQUFKLENBQU8sS0FBUCxDQUFhLEVBQWIsQ0FDSSxTQURKLEVBRUksWUFBVTtBQUNOLFlBQUksR0FBSixDQUFRLDJCQUEyQixPQUEzQixFQUFvQyxJQUFJLE1BQUosQ0FBVyxLQUFYLENBQTVDLENBRE07QUFFTixZQUFJLEVBQUosQ0FBTyxLQUFQLENBQWEsSUFBYixDQUNJLGFBREosRUFFSTtBQUNJLGdCQUFVLElBQUksTUFBSixDQUFXLEVBQVg7QUFDVixxQkFBVSxPQUFWO1NBSlIsRUFGTTtLQUFWLENBRkosQ0FETTtBQWNOLFFBQUksRUFBSixDQUFPLEtBQVAsQ0FBYSxFQUFiLENBQ0ksWUFESixFQUVJLFlBQVU7QUFDTixZQUFJLEdBQUosQ0FBUSwwQkFBMEIsTUFBMUIsQ0FBUixDQURNO0tBQVYsQ0FGSixDQWRNO0FBb0JOLFFBQUksRUFBSixDQUFPLEtBQVAsQ0FBYSxFQUFiLENBQ0ksYUFESixFQUVJLFVBQVMsSUFBVCxFQUFjO0FBQ1YsWUFBSSxHQUFKLENBQVEsOEJBQThCLEtBQTlCLEVBQXFDLEtBQUssT0FBTCxDQUE3QyxDQURVO0tBQWQsQ0FGSixDQXBCTTtBQTBCTixRQUFJLEVBQUosQ0FBTyxLQUFQLENBQWEsRUFBYixDQUNJLGlCQURKLEVBRUksVUFBUyxJQUFULEVBQWM7QUFDVixZQUFJLEdBQUosQ0FBUSxrQ0FBa0MsTUFBbEMsQ0FBUixDQURVO0FBRVYsWUFBSSxVQUFKLENBQWUsT0FBZixFQUZVO0tBQWQsQ0FGSixDQTFCTTtDQUFWLENBRkoiLCJmaWxlIjoiaGVsbG8tY2xpZW50LmpzIiwic291cmNlc0NvbnRlbnQiOlsidmFyIGlwYz1yZXF1aXJlKCcuLi8uLi8uLi9ub2RlLWlwYycpO1xuXG4vKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqXFxcbiAqXG4gKiBZb3Ugc2hvdWxkIHN0YXJ0IGJvdGggaGVsbG8gYW5kIHdvcmxkXG4gKiB0aGVuIHlvdSB3aWxsIHNlZSB0aGVtIGNvbW11bmljYXRpbmcuXG4gKlxuICogKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi9cblxuaXBjLmNvbmZpZy5pZCA9ICdoZWxsbyc7XG5pcGMuY29uZmlnLnJldHJ5PSAxNTAwO1xuaXBjLmNvbmZpZy5tYXhSZXRyaWVzPTEwO1xuXG5pcGMuY29ubmVjdFRvTmV0KFxuICAgICd3b3JsZCcsXG4gICAgZnVuY3Rpb24oKXtcbiAgICAgICAgaXBjLm9mLndvcmxkLm9uKFxuICAgICAgICAgICAgJ2Nvbm5lY3QnLFxuICAgICAgICAgICAgZnVuY3Rpb24oKXtcbiAgICAgICAgICAgICAgICBpcGMubG9nKCcjIyBjb25uZWN0ZWQgdG8gd29ybGQgIyMnLnJhaW5ib3csIGlwYy5jb25maWcuZGVsYXkpO1xuICAgICAgICAgICAgICAgIGlwYy5vZi53b3JsZC5lbWl0KFxuICAgICAgICAgICAgICAgICAgICAnYXBwLm1lc3NhZ2UnLFxuICAgICAgICAgICAgICAgICAgICB7XG4gICAgICAgICAgICAgICAgICAgICAgICBpZCAgICAgIDogaXBjLmNvbmZpZy5pZCxcbiAgICAgICAgICAgICAgICAgICAgICAgIG1lc3NhZ2UgOiAnaGVsbG8nXG4gICAgICAgICAgICAgICAgICAgIH1cbiAgICAgICAgICAgICAgICApO1xuICAgICAgICAgICAgfVxuICAgICAgICApO1xuICAgICAgICBpcGMub2Yud29ybGQub24oXG4gICAgICAgICAgICAnZGlzY29ubmVjdCcsXG4gICAgICAgICAgICBmdW5jdGlvbigpe1xuICAgICAgICAgICAgICAgIGlwYy5sb2coJ2Rpc2Nvbm5lY3RlZCBmcm9tIHdvcmxkJy5ub3RpY2UpO1xuICAgICAgICAgICAgfVxuICAgICAgICApO1xuICAgICAgICBpcGMub2Yud29ybGQub24oXG4gICAgICAgICAgICAnYXBwLm1lc3NhZ2UnLFxuICAgICAgICAgICAgZnVuY3Rpb24oZGF0YSl7XG4gICAgICAgICAgICAgICAgaXBjLmxvZygnZ290IGEgbWVzc2FnZSBmcm9tIHdvcmxkIDogJy5kZWJ1ZywgZGF0YS5tZXNzYWdlKTtcbiAgICAgICAgICAgIH1cbiAgICAgICAgKTtcbiAgICAgICAgaXBjLm9mLndvcmxkLm9uKFxuICAgICAgICAgICAgJ2tpbGwuY29ubmVjdGlvbicsXG4gICAgICAgICAgICBmdW5jdGlvbihkYXRhKXtcbiAgICAgICAgICAgICAgICBpcGMubG9nKCd3b3JsZCByZXF1ZXN0ZWQga2lsbC5jb25uZWN0aW9uJy5ub3RpY2UpO1xuICAgICAgICAgICAgICAgIGlwYy5kaXNjb25uZWN0KCd3b3JsZCcpO1xuICAgICAgICAgICAgfVxuICAgICAgICApO1xuICAgIH1cbik7XG4iXX0=
